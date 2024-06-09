@@ -115,7 +115,7 @@
 </head>
 <body>
     <header>
-        <h1>2</h1>
+        <h1>Text Image Scanner</h1>
     </header>
     <main>
         <div class="content">
@@ -137,14 +137,13 @@
         document.getElementById('uploaded-image').style.display = 'none';
 
         function handleImageUri(uri) {
-            //const img = document.getElementById('uploaded-image');
-            //img.src = uri;
-            //img.style.display = 'block';
-            //document.querySelector('#uploaded-image-container .placeholder').style.display = 'none';
-            //recognizeText(uri);
+            const img = document.getElementById('uploaded-image');
+            img.src = uri;
+            img.style.display = 'block';
+            document.querySelector('#uploaded-image-container .placeholder').style.display = 'none';
+            recognizeText(uri);
             // Android 인터페이스를 통해 이미지 URI를 안드로이드로 전달
-            //Android.handleImage(uri);
-            Android.showImage(uri);
+            Android.handleImage(uri);
         }
 
         function handleFileChange(event) {
