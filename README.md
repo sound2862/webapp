@@ -115,7 +115,7 @@
 </head>
 <body>
     <header>
-        <h1>Text Image Scanner</h1>
+        <h1>2</h1>
     </header>
     <main>
         <div class="content">
