@@ -143,7 +143,6 @@
             document.querySelector('#uploaded-image-container .placeholder').style.display = 'none';
             recognizeText(uri);
             // Android 인터페이스를 통해 이미지 URI를 안드로이드로 전달
-            console.log("Image URI: " + uri);  // URI를 로그로 출력
             Android.handleImage(uri);
         }
 
