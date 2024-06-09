@@ -114,66 +114,34 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1>Text Image Scanner</h1>
-    </header>
-    <main>
-        <div class="content">
-            <div class="image-translation-section">
-                <div id="uploaded-image-container">
-                    <span class="placeholder">Upload an image to start</span>
-                    <img id="uploaded-image" src="" alt="Uploaded Image">
-                    <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFileChange(event)">
-                </div>
-                <div class="translation-box" id="translation-box">
-                    <pre id="translation-text">read image</pre>
-                </div>
-            </div>
-        </div>
-        <img src="https://siuwww.github.io/ChatICT/images/anu.gif" alt="ANU Logo" class="footer-logo">
-    </main>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
-    <script>
-        document.getElementById('uploaded-image').style.display = 'none';
+    <input type="file" id="fileInput" accept="image/*" style="display:none;" onchange="handleFileSelect(event)">
+    <img id="selectedImage" src="" alt="선택된 이미지" style="max-width:100%; height:auto;">
+    <p id="extractedText">추출된 텍스트가 여기에 표시됩니다.</p>
 
-        function handleImageUri(uri) {
-            const img = document.getElementById('uploaded-image');
-            img.src = uri;
-            img.style.display = 'block';
-            document.querySelector('#uploaded-image-container .placeholder').style.display = 'none';
-            recognizeText(uri);
-            // Android 인터페이스를 통해 이미지 URI를 안드로이드로 전달
-            Android.handleImage(uri);
+    <script>
+        function triggerFileInput() {
+            document.getElementById('fileInput').click();
         }
 
-        function handleFileChange(event) {
+        function handleFileSelect(event) {
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    handleImageUri(e.target.result);
+                    document.getElementById('selectedImage').src = e.target.result;
+                    // 여기서 이미지를 서버로 업로드하거나 텍스트 추출 등의 작업을 수행할 수 있습니다.
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        function recognizeText(imageSrc) {
-            Tesseract.recognize(
-                imageSrc,
-                'kor+eng',
-                {
-                    logger: m => console.log(m)
-                }
-            ).then(({ data: { text } }) => {
-                document.getElementById('translation-text').innerText = text;
-                Android.processText(text); // 추출된 텍스트를 Android 인터페이스로 전달
-            }).catch(err => {
-                console.error(err);
-            });
+        function handleImageUri(uri) {
+            document.getElementById('selectedImage').src = uri;
+            // 여기서 이미지를 서버로 업로드하거나 텍스트 추출 등의 작업을 수행할 수 있습니다.
         }
 
-        function triggerFileInput() {
-            document.getElementById('file-input').click();
+        function processText(text) {
+            document.getElementById('extractedText').innerText = text;
         }
     </script>
 </body>
