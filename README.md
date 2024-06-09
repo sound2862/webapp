@@ -124,7 +124,6 @@
                     <span class="placeholder">Upload an image to start</span>
                     <img id="uploaded-image" src="" alt="Uploaded Image">
                     <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFileChange(event)">
-                    <input type="file" id="camera-input" accept="image/*" capture="camera" style="display:none;" onchange="handleFileChange(event)">
                 </div>
                 <div class="translation-box" id="translation-box">
                     <pre id="translation-text">read image</pre>
@@ -175,10 +174,6 @@
 
         function triggerFileInput() {
             document.getElementById('file-input').click();
-        }
-
-        function triggerCameraInput() {
-            document.getElementById('camera-input').click();
         }
     </script>
 </body>
