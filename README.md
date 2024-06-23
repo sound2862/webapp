@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title> <!-- 제목을 빈 문자열로 설정 -->
+    <title> </title> <!-- 빈 제목 설정 -->
     <style>
         body {
             font-family: 'Arial', sans-serif;
