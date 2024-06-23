@@ -14,14 +14,11 @@
             position: relative;
             min-height: 100vh;
         }
-        .hidden {
-            display: none;
-        }
         header {
             background-color: #ffffff;
             color: #616161;
             padding: 15px 20px;
-            display: none; /* 처음에 숨김 */
+            display: flex;
             justify-content: center;
             align-items: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -41,7 +38,7 @@
         }
         main {
             padding: 40px 20px;
-            display: none; /* 처음에 숨김 */
+            display: flex;
             flex-direction: column;
             align-items: center;
         }
@@ -52,7 +49,7 @@
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: none; /* 처음에 숨김 */
+            display: flex;
             flex-direction: column;
             align-items: center;
             transition: box-shadow 0.3s;
@@ -158,16 +155,6 @@
             color: white;
             transition: width 0.3s;
         }
-        #uploaded-image-display {
-            display: none; /* 새로 추가된 이미지 표시 영역 */
-            width: 100%;
-            text-align: center;
-        }
-        #progress-bar-display {
-            display: none; /* 새로 추가된 게이지 바 표시 영역 */
-            width: 100%;
-            text-align: center;
-        }
     </style>
     <!-- Include the pdfjs-dist library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
@@ -209,16 +196,6 @@
                 </div>
             </div>
         </div>
-        <div id="uploaded-image-display">
-            <h2>Uploaded Image</h2>
-            <img id="display-image" src="" alt="Uploaded Image" style="max-width: 100%;">
-        </div>
-        <div id="progress-bar-display">
-            <h2>Processing PDF</h2>
-            <div class="progress-bar-container">
-                <div class="progress-bar" id="progress-bar"></div>
-            </div>
-        </div>
         <img src="https://github.com/siuwww/ChatICT/blob/main/image/anu.gif?raw=true" alt="ANU Logo" class="footer-logo">
     </main>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
@@ -238,13 +215,10 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    document.querySelector('header').style.display = 'none';
-                    document.querySelector('main').style.display = 'none';
-                    document.querySelector('.content').style.display = 'none';
-                    document.getElementById('uploaded-image-display').style.display = 'block';
-                    document.getElementById('progress-bar-display').style.display = 'none';
-                    const img = document.getElementById('display-image');
+                    const img = document.getElementById('uploaded-image');
                     img.src = e.target.result;
+                    img.style.display = 'block';
+                    document.querySelector('.placeholder').style.display = 'none';
                     // Process the image with Tesseract
                     Tesseract.recognize(
                         e.target.result,
@@ -281,18 +255,15 @@
             isProcessing = true;
             const file = event.target.files[0];
             if (file) {
-                document.querySelector('header').style.display = 'none';
-                document.querySelector('main').style.display = 'none';
-                document.querySelector('.content').style.display = 'none';
-                document.getElementById('uploaded-image-display').style.display = 'none';
-                document.getElementById('progress-bar-display').style.display = 'block';
                 const reader = new FileReader();
                 reader.onload = async function(e) {
                     try {
                         const pdfData = new Uint8Array(e.target.result);
                         const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
                         let extractedText = '';
+                        const progressBarContainer = document.getElementById('progress-bar-container');
                         const progressBar = document.getElementById('progress-bar');
+                        progressBarContainer.style.display = 'block'; // Show progress bar
                         for (let i = 1; i <= pdf.numPages; i++) {
                             const page = await pdf.getPage(i);
 
@@ -331,13 +302,16 @@
                         const translationText = document.getElementById('translation-text');
                         translationText.textContent = formattedText;
                         translationText.classList.remove('placeholder');
+                        // Show confirmation text in the left panel
+                        const uploadedImageContainer = document.getElementById('uploaded-image-container');
+                        uploadedImageContainer.innerHTML = '<span class="placeholder">PDF Upload and Extraction Complete</span>';
                         isProcessing = false; // Reset the flag
-                        document.getElementById('progress-bar-display').style.display = 'none';
+                        progressBarContainer.style.display = 'none'; // Hide progress bar
                     } catch (error) {
                         console.error('Error during PDF processing:', error);
                         alert('Failed to process PDF file.');
                         isProcessing = false; // Reset the flag
-                        document.getElementById('progress-bar-display').style.display = 'none';
+                        progressBarContainer.style.display = 'none'; // Hide progress bar
                     }
                 };
                 reader.readAsArrayBuffer(file);
@@ -428,26 +402,13 @@
             img.src = '';
             const placeholder = document.querySelector('.placeholder');
             placeholder.style.display = 'block';
-            document.querySelector('header').style.display = 'none';
-            document.querySelector('main').style.display = 'none';
-            document.querySelector('.content').style.display = 'none';
-            document.getElementById('uploaded-image-display').style.display = 'none';
-            document.getElementById('progress-bar-display').style.display = 'none';
         }
 
         function triggerJpgUpload() {
-            document.querySelector('header').style.display = 'none';
-            document.querySelector('main').style.display = 'none';
-            document.querySelector('.content').style.display = 'none';
-            document.getElementById('uploaded-image-display').style.display = 'block';
             document.getElementById('file-input').click();
         }
 
         function triggerPdfUpload() {
-            document.querySelector('header').style.display = 'none';
-            document.querySelector('main').style.display = 'none';
-            document.querySelector('.content').style.display = 'none';
-            document.getElementById('progress-bar-display').style.display = 'block';
             document.getElementById('pdf-input').click();
         }
     </script>
