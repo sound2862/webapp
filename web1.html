@@ -238,6 +238,9 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
+                    document.querySelector('header').style.display = 'none';
+                    document.querySelector('main').style.display = 'none';
+                    document.querySelector('.content').style.display = 'none';
                     document.getElementById('uploaded-image-display').style.display = 'block';
                     document.getElementById('progress-bar-display').style.display = 'none';
                     const img = document.getElementById('display-image');
@@ -278,6 +281,9 @@
             isProcessing = true;
             const file = event.target.files[0];
             if (file) {
+                document.querySelector('header').style.display = 'none';
+                document.querySelector('main').style.display = 'none';
+                document.querySelector('.content').style.display = 'none';
                 document.getElementById('uploaded-image-display').style.display = 'none';
                 document.getElementById('progress-bar-display').style.display = 'block';
                 const reader = new FileReader();
@@ -422,15 +428,26 @@
             img.src = '';
             const placeholder = document.querySelector('.placeholder');
             placeholder.style.display = 'block';
+            document.querySelector('header').style.display = 'none';
+            document.querySelector('main').style.display = 'none';
+            document.querySelector('.content').style.display = 'none';
             document.getElementById('uploaded-image-display').style.display = 'none';
             document.getElementById('progress-bar-display').style.display = 'none';
         }
 
         function triggerJpgUpload() {
+            document.querySelector('header').style.display = 'none';
+            document.querySelector('main').style.display = 'none';
+            document.querySelector('.content').style.display = 'none';
+            document.getElementById('uploaded-image-display').style.display = 'block';
             document.getElementById('file-input').click();
         }
 
         function triggerPdfUpload() {
+            document.querySelector('header').style.display = 'none';
+            document.querySelector('main').style.display = 'none';
+            document.querySelector('.content').style.display = 'none';
+            document.getElementById('progress-bar-display').style.display = 'block';
             document.getElementById('pdf-input').click();
         }
     </script>
