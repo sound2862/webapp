@@ -145,15 +145,13 @@
             Android.handleImage(uri);
         }
 
-        function handleFileChange(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    handleImageUri(e.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
+        function handleImageUri(uri) {
+            const img = document.getElementById('uploaded-image');
+            img.src = uri;
+            img.style.display = 'block';
+            document.querySelector('#uploaded-image-container .placeholder').style.display = 'none';
+            recognizeText(uri);
+            Android.handleImage(uri);
         }
 
         function recognizeText(imageSrc) {
