@@ -14,8 +14,16 @@
             position: relative;
             min-height: 100vh;
         }
-        header, .header-container, h1, .panel-container, .panel, .content-panel, .footer-logo, .progress-bar-container, .button-container, .placeholder, #file-input, #pdf-input {
-            display: none !important; /* Hide these elements */
+        header, .header-container, h1, .panel-container, .panel, .content-panel, .footer-logo, .progress-bar-container {
+            display: none; /* Hide these elements */
+        }
+        main {
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            justify-content: center;
         }
         #uploaded-image-container {
             width: 100%;
@@ -30,16 +38,48 @@
             height: 100%;
             object-fit: contain;
             border-radius: 0; /* Remove border-radius to fill the entire container */
-            display: none; /* Initially hide the image */
+        }
+        .placeholder {
+            font-size: 20px;
+            color: #6c757d;
+            display: block; /* Show placeholder */
+        }
+        .button-container {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        .icon-button {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        #file-input, #pdf-input {
+            display: none; /* Hide file input */
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
 </head>
 <body>
+    <header>
+        <div class="header-container">
+            <img src="https://github.com/siuwww/ChatICT/blob/main/image/ocr-icon.png?raw=true" alt="OCR Icon">
+            <h1>Chat ICT</h1>
+        </div>
+    </header>
     <main>
         <div id="uploaded-image-container">
             <span class="placeholder">Upload an image or PDF</span>
             <img id="uploaded-image" src="" alt="Uploaded Image">
+        </div>
+        <div class="button-container">
+            <img src="https://raw.githubusercontent.com/siuwww/ChatICT/2251f390afe8f51369cb08904df7b0e5d4f6580d/image/upload-icon.png" id="upload-icon" class="icon-button" onclick="triggerFileInput();">
+            <input type="file" id="file-input" accept="image/*">
+            <img src="https://github.com/siuwww/ChatICT/blob/main/image/pdf-upload-icon.png?raw=true" id="pdf-upload-icon" class="icon-button" onclick="document.getElementById('pdf-input').click();">
+            <input type="file" id="pdf-input" accept="application/pdf">
         </div>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
