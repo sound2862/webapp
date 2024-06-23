@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
@@ -33,10 +34,6 @@
             display: flex;
             gap: 10px;
         }
-        /* 추가된 스타일 */
-        html, body {
-            display: contents;
-        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
 </head>
@@ -59,7 +56,9 @@
             img.src = uri;
             img.style.display = 'block';
             recognizeText(uri);
-            Android.handleImage(uri); // Android 인터페이스를 통해 이미지 URI를 안드로이드로 전달
+            if (typeof Android !== 'undefined') {
+                Android.handleImage(uri); // Android 인터페이스를 통해 이미지 URI를 안드로이드로 전달
+            }
         }
 
         function handleFileChange(event) {
@@ -107,7 +106,9 @@
                             });
                             extractedText += text + '\n';
                         }
-                        Android.processText(extractedText); // Android 인터페이스로 텍스트 전달
+                        if (typeof Android !== 'undefined') {
+                            Android.processText(extractedText); // Android 인터페이스로 텍스트 전달
+                        }
                         isProcessing = false;
                     } catch (error) {
                         console.error('PDF 처리 중 오류:', error);
@@ -122,7 +123,9 @@
             Tesseract.recognize(imageSrc, 'kor+eng', {
                 logger: m => console.log(m)
             }).then(({ data: { text } }) => {
-                Android.processText(text); // 추출된 텍스트를 Android 인터페이스로 전달
+                if (typeof Android !== 'undefined') {
+                    Android.processText(text); // 추출된 텍스트를 Android 인터페이스로 전달
+                }
             }).catch(err => {
                 console.error(err);
             });
