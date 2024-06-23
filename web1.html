@@ -245,7 +245,7 @@
                 reader.readAsDataURL(file);
             }
         });
-
+        
         document.getElementById('pdf-input').addEventListener('change', async function(event) {
             resetUploadSection(); // Reset the upload section
             if (isProcessing) {
@@ -266,11 +266,11 @@
                         progressBarContainer.style.display = 'block'; // Show progress bar
                         for (let i = 1; i <= pdf.numPages; i++) {
                             const page = await pdf.getPage(i);
-
+        
                             // Attempt to extract text content from the page
                             const textContent = await page.getTextContent();
                             let pageText = textContent.items.map(item => item.str).join(' ');
-
+        
                             if (!pageText.trim()) {
                                 // If no text content, render the page to an image and use OCR
                                 const viewport = page.getViewport({ scale: 1.5 });
@@ -278,22 +278,22 @@
                                 const context = canvas.getContext('2d');
                                 canvas.height = viewport.height;
                                 canvas.width = viewport.width;
-
+        
                                 // Render the page on the canvas
                                 await page.render({ canvasContext: context, viewport: viewport }).promise;
-
+        
                                 // Extract image data from the canvas
                                 const imageData = canvas.toDataURL('image/png');
-
+        
                                 // Perform OCR on the extracted image
                                 const { data: { text } } = await Tesseract.recognize(imageData, 'kor+eng', {
                                     logger: m => console.log(m)
                                 });
                                 pageText = text;
                             }
-
+        
                             extractedText += pageText + '\n';
-
+        
                             // Update progress bar
                             const progress = (i / pdf.numPages) * 100;
                             progressBar.style.width = `${progress}%`;
@@ -307,6 +307,11 @@
                         uploadedImageContainer.innerHTML = '<span class="placeholder">PDF Upload and Extraction Complete</span>';
                         isProcessing = false; // Reset the flag
                         progressBarContainer.style.display = 'none'; // Hide progress bar
+                        
+                        // Send text to Android app
+                        if (window.Android) {
+                            window.Android.processText(formattedText);
+                        }
                     } catch (error) {
                         console.error('Error during PDF processing:', error);
                         alert('Failed to process PDF file.');
@@ -317,6 +322,7 @@
                 reader.readAsArrayBuffer(file);
             }
         });
+
 
         document.getElementById('copy-text-btn').addEventListener('click', function() {
             const text = document.getElementById('translation-text').textContent;
