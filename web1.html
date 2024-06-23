@@ -22,7 +22,7 @@
             object-fit: cover;
             display: none;
         }
-        #file-input {
+        #file-input, #pdf-input {
             display: none;
         }
     </style>
@@ -33,6 +33,7 @@
         <img id="uploaded-image" src="" alt="Uploaded Image">
     </div>
     <input type="file" id="file-input" accept="image/*" onchange="handleFileChange(event)">
+    <input type="file" id="pdf-input" accept="application/pdf" onchange="handlePdfChange(event)">
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
     <script>
         let isProcessing = false;
@@ -64,6 +65,47 @@
             }
         }
 
+        async function handlePdfChange(event) {
+            if (isProcessing) {
+                alert('현재 다른 OCR 프로세스가 실행 중입니다. 계속하려면 새로고침을 해주세요.');
+                return;
+            }
+            isProcessing = true;
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    try {
+                        const pdfData = new Uint8Array(e.target.result);
+                        const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
+                        let extractedText = '';
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const viewport = page.getViewport({ scale: 1.5 });
+                            const canvas = document.createElement('canvas');
+                            const context = canvas.getContext('2d');
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
+                            await page.render({ canvasContext: context, viewport: viewport }).promise;
+                            const imageData = canvas.toDataURL('image/png');
+                            const { data: { text } } = await Tesseract.recognize(imageData, 'kor+eng', {
+                                logger: m => console.log(m)
+                            });
+                            extractedText += text + '\n';
+                        }
+                        if (typeof Android !== 'undefined') {
+                            Android.processText(extractedText); // Android 인터페이스로 텍스트 전달
+                        }
+                        isProcessing = false;
+                    } catch (error) {
+                        console.error('PDF 처리 중 오류:', error);
+                        isProcessing = false;
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        }
+
         function recognizeText(imageSrc) {
             Tesseract.recognize(imageSrc, 'kor+eng', {
                 logger: m => console.log(m)
@@ -76,9 +118,17 @@
             });
         }
 
+        function triggerFileInput() {
+            document.getElementById('file-input').click();
+        }
+
+        function triggerPdfInput() {
+            document.getElementById('pdf-input').click();
+        }
+
         // Android에서 호출할 수 있는 함수
         function triggerGallery() {
-            document.getElementById('file-input').click();
+            triggerFileInput();
         }
     </script>
 </body>
