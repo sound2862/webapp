@@ -74,14 +74,14 @@
             justify-content: space-between;
             border: 2px solid #cccccc;
             position: relative;
-            min-height: 400px; /* Fixed height */
+            min-height: 400px;
         }
         .panel:hover {
             border-color: #aaaaaa;
         }
         #uploaded-image-container {
             width: 100%;
-            height: 300px; /* Fixed height */
+            height: 300px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -106,7 +106,7 @@
             max-height: 580px;
             width: 100%;
             display: flex;
-            align-items: flex-start; /* Align items to the top */
+            align-items: flex-start;
             justify-content: flex-start;
             position: relative;
         }
@@ -117,7 +117,7 @@
             word-wrap: break-word;
             overflow-y: auto;
             text-align: center;
-            width: 100%; /* Ensure text takes full width */
+            width: 100%;
         }
         .icon-button {
             width: 40px;
@@ -137,7 +137,7 @@
             justify-content: right;
             flex-wrap: nowrap;
             width: 100%;
-            margin-top: 10px; /* Added margin-top for spacing */
+            margin-top: 10px;
         }
         .progress-bar-container {
             width: 100%;
@@ -156,7 +156,6 @@
             transition: width 0.3s;
         }
     </style>
-    <!-- Include the pdfjs-dist library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
 </head>
 <body>
@@ -179,8 +178,6 @@
                         <input type="file" id="file-input" accept="image/*" style="display:none;">
                         <img src="https://github.com/siuwww/ChatICT/blob/main/image/pdf-upload-icon.png?raw=true" id="pdf-upload-icon" class="icon-button" onclick="document.getElementById('pdf-input').click();">
                         <input type="file" id="pdf-input" accept="application/pdf" style="display:none;">
-                        <!-- New gallery button -->
-                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/gallery-icon.png?raw=true" id="gallery-icon" class="icon-button" onclick="triggerFileInput();">
                     </div>
                     <div class="progress-bar-container" id="progress-bar-container">
                         <div class="progress-bar" id="progress-bar"></div>
@@ -203,11 +200,11 @@
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
     <script>
         let audioQueue = [];
-        let isProcessing = false; // Flag to track the OCR process
-        let currentUtterance = null; // Track the current utterance
+        let isProcessing = false;
+        let currentUtterance = null;
 
         document.getElementById('file-input').addEventListener('change', function(event) {
-            resetUploadSection(); // Reset the upload section
+            resetUploadSection();
             if (isProcessing) {
                 alert('현재 다른 OCR 프로세스가 실행 중입니다. 계속하려면 새로고침을 해주세요.');
                 return;
@@ -221,7 +218,6 @@
                     img.src = e.target.result;
                     img.style.display = 'block';
                     document.querySelector('.placeholder').style.display = 'none';
-                    // Process the image with Tesseract
                     Tesseract.recognize(
                         e.target.result,
                         'kor+eng',
@@ -231,11 +227,11 @@
                     ).then(({ data: { text } }) => {
                         const translationText = document.getElementById('translation-text');
                         translationText.textContent = formatExtractedText(text);
-                        translationText.classList.remove('placeholder'); // Remove placeholder class
-                        isProcessing = false; // Reset the flag
+                        translationText.classList.remove('placeholder');
+                        isProcessing = false;
                     }).catch(error => {
                         console.error('Error:', error);
-                        isProcessing = false; // Reset the flag
+                        isProcessing = false;
                     });
                 };
                 reader.readAsDataURL(file);
@@ -243,7 +239,7 @@
         });
 
         document.getElementById('pdf-input').addEventListener('change', async function(event) {
-            resetUploadSection(); // Reset the upload section
+            resetUploadSection();
             if (isProcessing) {
                 alert('Another OCR process is currently running. Please wait.');
                 return;
@@ -259,29 +255,20 @@
                         let extractedText = '';
                         const progressBarContainer = document.getElementById('progress-bar-container');
                         const progressBar = document.getElementById('progress-bar');
-                        progressBarContainer.style.display = 'block'; // Show progress bar
+                        progressBarContainer.style.display = 'block';
                         for (let i = 1; i <= pdf.numPages; i++) {
                             const page = await pdf.getPage(i);
-
-                            // Attempt to extract text content from the page
                             const textContent = await page.getTextContent();
                             let pageText = textContent.items.map(item => item.str).join(' ');
 
                             if (!pageText.trim()) {
-                                // If no text content, render the page to an image and use OCR
                                 const viewport = page.getViewport({ scale: 1.5 });
                                 const canvas = document.createElement('canvas');
                                 const context = canvas.getContext('2d');
                                 canvas.height = viewport.height;
                                 canvas.width = viewport.width;
-
-                                // Render the page on the canvas
                                 await page.render({ canvasContext: context, viewport: viewport }).promise;
-
-                                // Extract image data from the canvas
                                 const imageData = canvas.toDataURL('image/png');
-
-                                // Perform OCR on the extracted image
                                 const { data: { text } } = await Tesseract.recognize(imageData, 'kor+eng', {
                                     logger: m => console.log(m)
                                 });
@@ -289,8 +276,6 @@
                             }
 
                             extractedText += pageText + '\n';
-
-                            // Update progress bar
                             const progress = (i / pdf.numPages) * 100;
                             progressBar.style.width = `${progress}%`;
                         }
@@ -298,16 +283,15 @@
                         const translationText = document.getElementById('translation-text');
                         translationText.textContent = formattedText;
                         translationText.classList.remove('placeholder');
-                        // Show confirmation text in the left panel
                         const uploadedImageContainer = document.getElementById('uploaded-image-container');
                         uploadedImageContainer.innerHTML = '<span class="placeholder">PDF Upload and Extraction Complete</span>';
-                        isProcessing = false; // Reset the flag
-                        progressBarContainer.style.display = 'none'; // Hide progress bar
+                        isProcessing = false;
+                        progressBarContainer.style.display = 'none';
                     } catch (error) {
                         console.error('Error during PDF processing:', error);
                         alert('Failed to process PDF file.');
-                        isProcessing = false; // Reset the flag
-                        progressBarContainer.style.display = 'none'; // Hide progress bar
+                        isProcessing = false;
+                        progressBarContainer.style.display = 'none';
                     }
                 };
                 reader.readAsArrayBuffer(file);
@@ -355,7 +339,6 @@
         });
 
         function formatExtractedText(text) {
-            // Split text into lines and join with proper spacing
             return text.split(/[\r\n]+/).map(line => line.trim()).join('\n');
         }
 
@@ -398,46 +381,6 @@
             img.src = '';
             const placeholder = document.querySelector('.placeholder');
             placeholder.style.display = 'block';
-        }
-
-        function triggerFileInput() {
-            document.getElementById('file-input').click();
-        }
-
-        function handleImageUri(uri) {
-            const img = document.getElementById('uploaded-image');
-            img.src = uri;
-            img.style.display = 'block';
-            document.querySelector('#uploaded-image-container .placeholder').style.display = 'none';
-            recognizeText(uri);
-            // Android 인터페이스를 통해 이미지 URI를 안드로이드로 전달
-            Android.handleImage(uri);
-        }
-
-        function handleFileChange(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    handleImageUri(e.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function recognizeText(imageSrc) {
-            Tesseract.recognize(
-                imageSrc,
-                'kor+eng',
-                {
-                    logger: m => console.log(m)
-                }
-            ).then(({ data: { text } }) => {
-                document.getElementById('translation-text').innerText = text;
-                Android.processText(text); // 추출된 텍스트를 Android 인터페이스로 전달
-            }).catch(err => {
-                console.error(err);
-            });
         }
     </script>
 </body>
