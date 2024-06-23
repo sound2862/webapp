@@ -219,6 +219,10 @@
                     img.src = e.target.result;
                     img.style.display = 'block';
                     document.querySelector('.placeholder').style.display = 'none';
+                    // Notify Android that an image has been uploaded
+                    if (window.Android) {
+                        window.Android.showUploadedImage();
+                    }
                     // Process the image with Tesseract
                     Tesseract.recognize(
                         e.target.result,
@@ -264,6 +268,9 @@
                         const progressBarContainer = document.getElementById('progress-bar-container');
                         const progressBar = document.getElementById('progress-bar');
                         progressBarContainer.style.display = 'block'; // Show progress bar
+                        if (window.Android) {
+                            window.Android.showProgressBar();
+                        }
                         for (let i = 1; i <= pdf.numPages; i++) {
                             const page = await pdf.getPage(i);
 
@@ -406,10 +413,16 @@
 
         function triggerJpgUpload() {
             document.getElementById('file-input').click();
+            if (window.Android) {
+                window.Android.setBackgroundColorWhite();
+            }
         }
 
         function triggerPdfUpload() {
             document.getElementById('pdf-input').click();
+            if (window.Android) {
+                window.Android.setBackgroundColorWhite();
+            }
         }
     </script>
 </body>
