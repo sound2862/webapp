@@ -231,6 +231,9 @@
                         translationText.textContent = formatExtractedText(text);
                         translationText.classList.remove('placeholder'); // Remove placeholder class
                         isProcessing = false; // Reset the flag
+                        if (typeof Android !== 'undefined' && Android.processText) {
+                            Android.processText(text); // Send extracted text to Android
+                        }
                     }).catch(error => {
                         console.error('Error:', error);
                         isProcessing = false; // Reset the flag
@@ -290,7 +293,7 @@
 
                             // Update progress bar
                             const progress = (i / pdf.numPages) * 100;
-                            progressBar.style.width = ${progress}%;
+                            progressBar.style.width = `${progress}%`;
                         }
                         const formattedText = formatExtractedText(extractedText);
                         const translationText = document.getElementById('translation-text');
@@ -301,6 +304,9 @@
                         uploadedImageContainer.innerHTML = '<span class="placeholder">PDF Upload and Extraction Complete</span>';
                         isProcessing = false; // Reset the flag
                         progressBarContainer.style.display = 'none'; // Hide progress bar
+                        if (typeof Android !== 'undefined' && Android.processText) {
+                            Android.processText(extractedText); // Send extracted text to Android
+                        }
                     } catch (error) {
                         console.error('Error during PDF processing:', error);
                         alert('Failed to process PDF file.');
