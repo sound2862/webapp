@@ -175,7 +175,7 @@
                         <img id="uploaded-image" src="" alt="Uploaded Image">
                     </div>
                     <div class="button-container">
-                        <img src="https://raw.githubusercontent.com/siuwww/ChatICT/2251f390afe8f51369cb08904df7b0e5d4f6580d/image/upload-icon.png" id="upload-icon" class="icon-button" onclick="triggerFileInput();">
+                        <img src="https://raw.githubusercontent.com/siuwww/ChatICT/2251f390afe8f51369cb08904df7b0e5d4f6580d/image/upload-icon.png" id="upload-icon" class="icon-button" onclick="document.getElementById('file-input').click();">
                         <input type="file" id="file-input" accept="image/*" style="display:none;">
                         <img src="https://github.com/siuwww/ChatICT/blob/main/image/pdf-upload-icon.png?raw=true" id="pdf-upload-icon" class="icon-button" onclick="document.getElementById('pdf-input').click();">
                         <input type="file" id="pdf-input" accept="application/pdf" style="display:none;">
@@ -204,10 +204,6 @@
         let isProcessing = false; // Flag to track the OCR process
         let currentUtterance = null; // Track the current utterance
 
-        function triggerFileInput() {
-            document.getElementById('file-input').click();
-        }
-
         document.getElementById('file-input').addEventListener('change', function(event) {
             resetUploadSection(); // Reset the upload section
             if (isProcessing) {
@@ -235,7 +231,6 @@
                         translationText.textContent = formatExtractedText(text);
                         translationText.classList.remove('placeholder'); // Remove placeholder class
                         isProcessing = false; // Reset the flag
-                        Android.processText(text); // 전달된 텍스트를 안드로이드 앱으로 전달
                     }).catch(error => {
                         console.error('Error:', error);
                         isProcessing = false; // Reset the flag
@@ -401,6 +396,14 @@
             img.src = '';
             const placeholder = document.querySelector('.placeholder');
             placeholder.style.display = 'block';
+        }
+
+        function triggerJpgUpload() {
+            document.getElementById('file-input').click();
+        }
+
+        function triggerPdfUpload() {
+            document.getElementById('pdf-input').click();
         }
     </script>
 </body>
