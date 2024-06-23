@@ -228,9 +228,15 @@
                         }
                     ).then(({ data: { text } }) => {
                         const translationText = document.getElementById('translation-text');
-                        translationText.textContent = formatExtractedText(text);
+                        const formattedText = formatExtractedText(text);
+                        translationText.textContent = formattedText;
                         translationText.classList.remove('placeholder'); // Remove placeholder class
                         isProcessing = false; // Reset the flag
+                
+                        // Send text to Android app
+                        if (window.Android) {
+                            window.Android.processText(formattedText);
+                        }
                     }).catch(error => {
                         console.error('Error:', error);
                         isProcessing = false; // Reset the flag
