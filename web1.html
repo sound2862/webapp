@@ -14,53 +14,149 @@
             position: relative;
             min-height: 100vh;
         }
-        header, .header-container, h1, .panel-container, .panel, .content-panel, .footer-logo, .progress-bar-container {
-            display: none; /* Hide these elements */
+        header {
+            background-color: #ffffff;
+            color: #616161;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .header-container {
+            display: flex;
+            align-items: center;
+        }
+        .header-container img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+        h1 {
+            font-size: 35px;
+            margin: 0;
         }
         main {
-            padding: 0;
+            padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            height: 100vh;
-            justify-content: center;
+        }
+        .content {
+            width: 100%;
+            max-width: 1200px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: box-shadow 0.3s;
+        }
+        .content:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+        .panel-container {
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .panel {
+            width: 45%;
+            border-radius: 12px;
+            padding: 26px;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            border: 2px solid #cccccc;
+            position: relative;
+            min-height: 400px; /* Fixed height */
+        }
+        .panel:hover {
+            border-color: #aaaaaa;
         }
         #uploaded-image-container {
             width: 100%;
-            height: 100vh; /* Make it fill the entire viewport height */
+            height: 300px; /* Fixed height */
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative;
         }
         #uploaded-image {
             width: 100%;
             height: 100%;
             object-fit: contain;
-            border-radius: 0; /* Remove border-radius to fill the entire container */
+            border-radius: 12px;
+            display: none;
         }
         .placeholder {
             font-size: 20px;
             color: #6c757d;
-            display: block; /* Show placeholder */
         }
-        .button-container {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+        .content-panel {
+            font-size: 18px;
+            color: #444444;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-y: auto;
+            max-height: 580px;
+            width: 100%;
             display: flex;
-            gap: 10px;
+            align-items: flex-start; /* Align items to the top */
+            justify-content: flex-start;
+            position: relative;
+        }
+        #translation-text {
+            font-size: 18px;
+            color: #444444;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow-y: auto;
+            text-align: center;
+            width: 100%; /* Ensure text takes full width */
         }
         .icon-button {
             width: 40px;
             height: 40px;
+            margin: 3px;
             cursor: pointer;
         }
-        #file-input, #pdf-input {
-            display: none; /* Hide file input */
+        .footer-logo {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            width: 250px;
+            height: auto;
+        }
+        .button-container {
+            display: flex;
+            justify-content: right;
+            flex-wrap: nowrap;
+            width: 100%;
+            margin-top: 10px; /* Added margin-top for spacing */
+        }
+        .progress-bar-container {
+            width: 100%;
+            background-color: #f3f3f3;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+        }
+        .progress-bar {
+            width: 0;
+            height: 20px;
+            background-color: #4caf50;
+            border-radius: 12px;
+            text-align: center;
+            color: white;
+            transition: width 0.3s;
         }
     </style>
+    <!-- Include the pdfjs-dist library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
 </head>
 <body>
@@ -71,16 +167,36 @@
         </div>
     </header>
     <main>
-        <div id="uploaded-image-container">
-            <span class="placeholder">Upload an image or PDF</span>
-            <img id="uploaded-image" src="" alt="Uploaded Image">
+        <div class="content">
+            <div class="panel-container">
+                <div class="panel">
+                    <div id="uploaded-image-container">
+                        <span class="placeholder">Upload an image or PDF</span>
+                        <img id="uploaded-image" src="" alt="Uploaded Image">
+                    </div>
+                    <div class="button-container">
+                        <img src="https://raw.githubusercontent.com/siuwww/ChatICT/2251f390afe8f51369cb08904df7b0e5d4f6580d/image/upload-icon.png" id="upload-icon" class="icon-button" onclick="triggerFileInput();">
+                        <input type="file" id="file-input" accept="image/*" style="display:none;">
+                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/pdf-upload-icon.png?raw=true" id="pdf-upload-icon" class="icon-button" onclick="document.getElementById('pdf-input').click();">
+                        <input type="file" id="pdf-input" accept="application/pdf" style="display:none;">
+                    </div>
+                    <div class="progress-bar-container" id="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="content-panel" id="translation-box">
+                        <span id="translation-text" class="placeholder"></span>
+                    </div>
+                    <div class="button-container">
+                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/copy-icon.png?raw=true" id="copy-text-btn" class="icon-button">
+                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/play-icon.png?raw=true" id="play-audio-btn" class="icon-button">
+                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/stop-icon.png?raw=true" id="stop-audio-btn" class="icon-button">
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="button-container">
-            <img src="https://raw.githubusercontent.com/siuwww/ChatICT/2251f390afe8f51369cb08904df7b0e5d4f6580d/image/upload-icon.png" id="upload-icon" class="icon-button" onclick="triggerFileInput();">
-            <input type="file" id="file-input" accept="image/*">
-            <img src="https://github.com/siuwww/ChatICT/blob/main/image/pdf-upload-icon.png?raw=true" id="pdf-upload-icon" class="icon-button" onclick="document.getElementById('pdf-input').click();">
-            <input type="file" id="pdf-input" accept="application/pdf">
-        </div>
+        <img src="https://github.com/siuwww/ChatICT/blob/main/image/anu.gif?raw=true" alt="ANU Logo" class="footer-logo">
     </main>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
     <script>
@@ -144,6 +260,9 @@
                         const pdfData = new Uint8Array(e.target.result);
                         const pdf = await pdfjsLib.getDocument({ data: pdfData }).promise;
                         let extractedText = '';
+                        const progressBarContainer = document.getElementById('progress-bar-container');
+                        const progressBar = document.getElementById('progress-bar');
+                        progressBarContainer.style.display = 'block'; // Show progress bar
                         for (let i = 1; i <= pdf.numPages; i++) {
                             const page = await pdf.getPage(i);
 
@@ -173,6 +292,10 @@
                             }
 
                             extractedText += pageText + '\n';
+
+                            // Update progress bar
+                            const progress = (i / pdf.numPages) * 100;
+                            progressBar.style.width = `${progress}%`;
                         }
                         const formattedText = formatExtractedText(extractedText);
                         const translationText = document.getElementById('translation-text');
@@ -182,10 +305,12 @@
                         const uploadedImageContainer = document.getElementById('uploaded-image-container');
                         uploadedImageContainer.innerHTML = '<span class="placeholder">PDF Upload and Extraction Complete</span>';
                         isProcessing = false; // Reset the flag
+                        progressBarContainer.style.display = 'none'; // Hide progress bar
                     } catch (error) {
                         console.error('Error during PDF processing:', error);
                         alert('Failed to process PDF file.');
                         isProcessing = false; // Reset the flag
+                        progressBarContainer.style.display = 'none'; // Hide progress bar
                     }
                 };
                 reader.readAsArrayBuffer(file);
