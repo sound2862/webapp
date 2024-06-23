@@ -158,47 +158,6 @@
     </style>
     <!-- Include the pdfjs-dist library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
-</head>
-<body>
-    <header>
-        <div class="header-container">
-            <img src="https://github.com/siuwww/ChatICT/blob/main/image/ocr-icon.png?raw=true" alt="OCR Icon">
-            <h1>Chat ICT</h1>
-        </div>
-    </header>
-    <main>
-        <div class="content">
-            <div class="panel-container">
-                <div class="panel">
-                    <div id="uploaded-image-container">
-                        <span class="placeholder">Upload an image or PDF</span>
-                        <img id="uploaded-image" src="" alt="Uploaded Image">
-                    </div>
-                    <div class="button-container">
-                        <img src="https://raw.githubusercontent.com/siuwww/ChatICT/2251f390afe8f51369cb08904df7b0e5d4f6580d/image/upload-icon.png" id="upload-icon" class="icon-button" onclick="document.getElementById('file-input').click();">
-                        <input type="file" id="file-input" accept="image/*" style="display:none;">
-                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/pdf-upload-icon.png?raw=true" id="pdf-upload-icon" class="icon-button" onclick="document.getElementById('pdf-input').click();">
-                        <input type="file" id="pdf-input" accept="application/pdf" style="display:none;">
-                    </div>
-                    <div class="progress-bar-container" id="progress-bar-container">
-                        <div class="progress-bar" id="progress-bar"></div>
-                    </div>
-                </div>
-                <div class="panel">
-                    <div class="content-panel" id="translation-box">
-                        <span id="translation-text" class="placeholder"></span>
-                    </div>
-                    <div class="button-container">
-                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/copy-icon.png?raw=true" id="copy-text-btn" class="icon-button">
-                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/play-icon.png?raw=true" id="play-audio-btn" class="icon-button">
-                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/stop-icon.png?raw=true" id="stop-audio-btn" class="icon-button">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <img src="https://github.com/siuwww/ChatICT/blob/main/image/anu.gif?raw=true" alt="ANU Logo" class="footer-logo">
-    </main>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
     <script>
         let audioQueue = [];
         let isProcessing = false; // Flag to track the OCR process
@@ -231,6 +190,7 @@
                         translationText.textContent = formatExtractedText(text);
                         translationText.classList.remove('placeholder'); // Remove placeholder class
                         isProcessing = false; // Reset the flag
+                        processText(translationText.textContent); // Added to pass text to Android
                     }).catch(error => {
                         console.error('Error:', error);
                         isProcessing = false; // Reset the flag
@@ -296,6 +256,7 @@
                         const translationText = document.getElementById('translation-text');
                         translationText.textContent = formattedText;
                         translationText.classList.remove('placeholder');
+                        processText(translationText.textContent); // Added to pass text to Android
                         // Show confirmation text in the left panel
                         const uploadedImageContainer = document.getElementById('uploaded-image-container');
                         uploadedImageContainer.innerHTML = '<span class="placeholder">PDF Upload and Extraction Complete</span>';
@@ -404,6 +365,53 @@
 
         function triggerPdfUpload() {
             document.getElementById('pdf-input').click();
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <img src="https://github.com/siuwww/ChatICT/blob/main/image/ocr-icon.png?raw=true" alt="OCR Icon">
+            <h1>Chat ICT</h1>
+        </div>
+    </header>
+    <main>
+        <div class="content">
+            <div class="panel-container">
+                <div class="panel">
+                    <div id="uploaded-image-container">
+                        <span class="placeholder">Upload an image or PDF</span>
+                        <img id="uploaded-image" src="" alt="Uploaded Image">
+                    </div>
+                    <div class="button-container">
+                        <img src="https://raw.githubusercontent.com/siuwww/ChatICT/2251f390afe8f51369cb08904df7b0e5d4f6580d/image/upload-icon.png" id="upload-icon" class="icon-button" onclick="document.getElementById('file-input').click();">
+                        <input type="file" id="file-input" accept="image/*" style="display:none;">
+                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/pdf-upload-icon.png?raw=true" id="pdf-upload-icon" class="icon-button" onclick="document.getElementById('pdf-input').click();">
+                        <input type="file" id="pdf-input" accept="application/pdf" style="display:none;">
+                    </div>
+                    <div class="progress-bar-container" id="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="content-panel" id="translation-box">
+                        <span id="translation-text" class="placeholder"></span>
+                    </div>
+                    <div class="button-container">
+                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/copy-icon.png?raw=true" id="copy-text-btn" class="icon-button">
+                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/play-icon.png?raw=true" id="play-audio-btn" class="icon-button">
+                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/stop-icon.png?raw=true" id="stop-audio-btn" class="icon-button">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <img src="https://github.com/siuwww/ChatICT/blob/main/image/anu.gif?raw=true" alt="ANU Logo" class="footer-logo">
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
+    <script>
+        // Include the processText function here
+        function processText(text) {
+            Android.processText(text);
         }
     </script>
 </body>
