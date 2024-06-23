@@ -120,7 +120,7 @@
     <main>
         <div class="content">
             <div class="image-translation-section">
-                <div id="uploaded-image-container">
+                <div id="uploaded-image-container" onclick="triggerFileInput()">
                     <span class="placeholder">Upload an image to start</span>
                     <img id="uploaded-image" src="" alt="Uploaded Image">
                     <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFileChange(event)">
@@ -142,7 +142,6 @@
             img.style.display = 'block';
             document.querySelector('#uploaded-image-container .placeholder').style.display = 'none';
             recognizeText(uri);
-            // Android 인터페이스를 통해 이미지 URI를 안드로이드로 전달
             Android.handleImage(uri);
         }
 
@@ -166,7 +165,7 @@
                 }
             ).then(({ data: { text } }) => {
                 document.getElementById('translation-text').innerText = text;
-                Android.processText(text); // 추출된 텍스트를 Android 인터페이스로 전달
+                Android.processText(text);
             }).catch(err => {
                 console.error(err);
             });
@@ -174,6 +173,10 @@
 
         function triggerFileInput() {
             document.getElementById('file-input').click();
+        }
+
+        function triggerCameraInput() {
+            Android.openCamera();
         }
     </script>
 </body>
