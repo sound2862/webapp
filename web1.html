@@ -175,9 +175,9 @@
                         <img id="uploaded-image" src="" alt="Uploaded Image">
                     </div>
                     <div class="button-container">
-                        <img src="https://raw.githubusercontent.com/siuwww/ChatICT/2251f390afe8f51369cb08904df7b0e5d4f6580d/image/upload-icon.png" id="upload-icon" class="icon-button" onclick="document.getElementById('file-input').click();">
+                        <img src="https://raw.githubusercontent.com/siuwww/ChatICT/2251f390afe8f51369cb08904df7b0e5d4f6580d/image/upload-icon.png" id="upload-icon" class="icon-button" onclick="triggerJpgUpload();">
                         <input type="file" id="file-input" accept="image/*" style="display:none;">
-                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/pdf-upload-icon.png?raw=true" id="pdf-upload-icon" class="icon-button" onclick="document.getElementById('pdf-input').click();">
+                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/pdf-upload-icon.png?raw=true" id="pdf-upload-icon" class="icon-button" onclick="triggerPdfUpload();">
                         <input type="file" id="pdf-input" accept="application/pdf" style="display:none;">
                     </div>
                     <div class="progress-bar-container" id="progress-bar-container">
@@ -290,7 +290,7 @@
 
                             // Update progress bar
                             const progress = (i / pdf.numPages) * 100;
-                            progressBar.style.width = ${progress}%;
+                            progressBar.style.width = `${progress}%`;
                         }
                         const formattedText = formatExtractedText(extractedText);
                         const translationText = document.getElementById('translation-text');
