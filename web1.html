@@ -43,9 +43,9 @@
     </div>
     <div id="icon-container">
         <img src="https://raw.githubusercontent.com/siuwww/ChatICT/2251f390afe8f51369cb08904df7b0e5d4f6580d/image/upload-icon.png" id="upload-icon" onclick="triggerFileInput();">
-        <input type="file" id="file-input" accept="image/*" onchange="handleFileChange(event)">
+        <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFileChange(event)">
         <img src="https://github.com/siuwww/ChatICT/blob/main/image/pdf-upload-icon.png?raw=true" id="pdf-upload-icon" onclick="triggerPdfInput();">
-        <input type="file" id="pdf-input" accept="application/pdf" onchange="handlePdfChange(event)">
+        <input type="file" id="pdf-input" accept="application/pdf" style="display:none;" onchange="handlePdfChange(event)">
     </div>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
     <script>
@@ -137,6 +137,11 @@
 
         function triggerPdfInput() {
             document.getElementById('pdf-input').click();
+        }
+
+        // Android에서 호출할 수 있는 함수
+        function triggerGallery() {
+            triggerFileInput();
         }
     </script>
 </body>
