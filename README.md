@@ -132,6 +132,7 @@
         </div>
         <img src="https://siuwww.github.io/ChatICT/images/anu.gif" alt="ANU Logo" class="footer-logo">
     </main>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
     <script>
         document.getElementById('uploaded-image').style.display = 'none';
 
@@ -140,7 +141,9 @@
             img.src = uri;
             img.style.display = 'block';
             document.querySelector('#uploaded-image-container .placeholder').style.display = 'none';
-            uploadImageToServer(uri);
+            recognizeText(uri);
+            // Android 인터페이스를 통해 이미지 URI를 안드로이드로 전달
+            Android.handleImage(uri);
         }
 
         function handleFileChange(event) {
@@ -154,17 +157,16 @@
             }
         }
 
-        function uploadImageToServer(imageUri) {
-            fetch('https://your-server-url/upload', {
-                method: 'POST',
-                body: JSON.stringify({ image: imageUri }),
-                headers: {
-                    'Content-Type': 'application/json'
+        function recognizeText(imageSrc) {
+            Tesseract.recognize(
+                imageSrc,
+                'kor+eng',
+                {
+                    logger: m => console.log(m)
                 }
-            }).then(response => response.json())
-            .then(data => {
-                document.getElementById('translation-text').innerText = data.text;
-                Android.processText(data.text); // 추출된 텍스트를 Android 인터페이스로 전달
+            ).then(({ data: { text } }) => {
+                document.getElementById('translation-text').innerText = text;
+                Android.processText(text); // 추출된 텍스트를 Android 인터페이스로 전달
             }).catch(err => {
                 console.error(err);
             });
