@@ -240,7 +240,7 @@
                         const translationText = document.getElementById('translation-text');
                         const formattedText = formatExtractedText(text);
                         translationText.textContent = formattedText;
-                        translationText.classList.remove('placeholder'); // Remove placeholder class
+                        translationText.style.display = 'block'; // Remove placeholder class
                         isProcessing = false; // Reset the flag
                 
                         // Send text to Android app
@@ -311,7 +311,7 @@
                         const formattedText = formatExtractedText(extractedText);
                         const translationText = document.getElementById('translation-text');
                         translationText.textContent = formattedText;
-                        translationText.classList.remove('placeholder');
+                        translationText.style.display = 'block';
                         // Show confirmation text in the left panel
                         const uploadedImageContainer = document.getElementById('uploaded-image-container');
                         uploadedImageContainer.innerHTML = '<span class="placeholder">PDF Upload and Extraction Complete</span>';
