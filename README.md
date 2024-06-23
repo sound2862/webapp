@@ -34,6 +34,10 @@
             display: flex;
             gap: 10px;
         }
+        /* 추가된 스타일 */
+        html, body {
+            display: contents;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
 </head>
