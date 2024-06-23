@@ -137,6 +137,7 @@
         document.getElementById('uploaded-image').style.display = 'none';
 
         function handleImageUri(uri) {
+            console.log("handleImageUri called with URI:", uri); // 디버깅 로그 추가
             const img = document.getElementById('uploaded-image');
             img.src = uri;
             img.style.display = 'block';
@@ -145,16 +146,19 @@
             Android.handleImage(uri);
         }
 
-        function handleImageUri(uri) {
-            const img = document.getElementById('uploaded-image');
-            img.src = uri;
-            img.style.display = 'block';
-            document.querySelector('#uploaded-image-container .placeholder').style.display = 'none';
-            recognizeText(uri);
-            Android.handleImage(uri);
+        function handleFileChange(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    handleImageUri(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         function recognizeText(imageSrc) {
+            console.log("recognizeText called with imageSrc:", imageSrc); // 디버깅 로그 추가
             Tesseract.recognize(
                 imageSrc,
                 'kor+eng',
@@ -162,10 +166,11 @@
                     logger: m => console.log(m)
                 }
             ).then(({ data: { text } }) => {
+                console.log("Tesseract recognized text:", text); // 디버깅 로그 추가
                 document.getElementById('translation-text').innerText = text;
                 Android.processText(text);
             }).catch(err => {
-                console.error(err);
+                console.error("Tesseract error:", err); // 디버깅 로그 추가
             });
         }
 
