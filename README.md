@@ -179,6 +179,7 @@
         }
 
         function triggerCameraInput() {
+            console.log("triggerCameraInput called"); // 디버깅 로그 추가
             Android.openCamera();
         }
     </script>
