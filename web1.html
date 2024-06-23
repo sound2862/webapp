@@ -14,6 +14,15 @@
             position: relative;
             min-height: 100vh;
         }
+        header, main, .content, .panel-container, .panel, .button-container, .content-panel {
+            display: none; /* 기본적으로 모든 요소 숨기기 */
+        }
+        .invisible {
+            display: none !important;
+        }
+        .visible {
+            display: block !important;
+        }
         header {
             background-color: #ffffff;
             color: #616161;
@@ -74,14 +83,14 @@
             justify-content: space-between;
             border: 2px solid #cccccc;
             position: relative;
-            min-height: 400px; /* Fixed height */
+            min-height: 400px; /* 고정 높이 */
         }
         .panel:hover {
             border-color: #aaaaaa;
         }
         #uploaded-image-container {
             width: 100%;
-            height: 300px; /* Fixed height */
+            height: 300px; /* 고정 높이 */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -106,7 +115,7 @@
             max-height: 580px;
             width: 100%;
             display: flex;
-            align-items: flex-start; /* Align items to the top */
+            align-items: flex-start; /* 항목을 상단에 정렬 */
             justify-content: flex-start;
             position: relative;
         }
@@ -117,7 +126,7 @@
             word-wrap: break-word;
             overflow-y: auto;
             text-align: center;
-            width: 100%; /* Ensure text takes full width */
+            width: 100%; /* 텍스트가 전체 너비를 차지하도록 설정 */
         }
         .icon-button {
             width: 40px;
@@ -137,7 +146,7 @@
             justify-content: right;
             flex-wrap: nowrap;
             width: 100%;
-            margin-top: 10px; /* Added margin-top for spacing */
+            margin-top: 10px; /* 간격 추가 */
         }
         .progress-bar-container {
             width: 100%;
@@ -156,22 +165,22 @@
             transition: width 0.3s;
         }
     </style>
-    <!-- Include the pdfjs-dist library -->
+    <!-- pdfjs-dist 라이브러리 포함 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
 </head>
 <body>
-    <header>
+    <header class="invisible">
         <div class="header-container">
             <img src="https://github.com/siuwww/ChatICT/blob/main/image/ocr-icon.png?raw=true" alt="OCR Icon">
             <h1>Chat ICT</h1>
         </div>
     </header>
-    <main>
+    <main class="invisible">
         <div class="content">
             <div class="panel-container">
                 <div class="panel">
                     <div id="uploaded-image-container">
-                        <span class="placeholder">Upload an image or PDF</span>
+                        <span class="placeholder">이미지 또는 PDF 업로드</span>
                         <img id="uploaded-image" src="" alt="Uploaded Image">
                     </div>
                     <div class="button-container">
@@ -201,11 +210,11 @@
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js"></script>
     <script>
         let audioQueue = [];
-        let isProcessing = false; // Flag to track the OCR process
-        let currentUtterance = null; // Track the current utterance
+        let isProcessing = false; // OCR 프로세스 상태 플래그
+        let currentUtterance = null; // 현재 발음 추적
 
         document.getElementById('file-input').addEventListener('change', function(event) {
-            resetUploadSection(); // Reset the upload section
+            resetUploadSection(); // 업로드 섹션 재설정
             if (isProcessing) {
                 alert('현재 다른 OCR 프로세스가 실행 중입니다. 계속하려면 새로고침을 해주세요.');
                 return;
@@ -219,11 +228,9 @@
                     img.src = e.target.result;
                     img.style.display = 'block';
                     document.querySelector('.placeholder').style.display = 'none';
-                    // Notify Android that an image has been uploaded
-                    if (window.Android) {
-                        window.Android.showUploadedImage();
-                    }
-                    // Process the image with Tesseract
+                    document.querySelector('header').classList.add('invisible');
+                    document.querySelector('main').classList.add('invisible');
+                    // 이미지 처리
                     Tesseract.recognize(
                         e.target.result,
                         'kor+eng',
@@ -234,16 +241,16 @@
                         const translationText = document.getElementById('translation-text');
                         const formattedText = formatExtractedText(text);
                         translationText.textContent = formattedText;
-                        translationText.classList.remove('placeholder'); // Remove placeholder class
-                        isProcessing = false; // Reset the flag
+                        translationText.classList.remove('placeholder'); // 플레이스홀더 클래스 제거
+                        isProcessing = false; // 플래그 재설정
                 
-                        // Send text to Android app
+                        // 텍스트를 Android 앱으로 전송
                         if (window.Android) {
                             window.Android.processText(formattedText);
                         }
                     }).catch(error => {
                         console.error('Error:', error);
-                        isProcessing = false; // Reset the flag
+                        isProcessing = false; // 플래그 재설정
                     });
                 };
                 reader.readAsDataURL(file);
@@ -251,9 +258,9 @@
         });
 
         document.getElementById('pdf-input').addEventListener('change', async function(event) {
-            resetUploadSection(); // Reset the upload section
+            resetUploadSection(); // 업로드 섹션 재설정
             if (isProcessing) {
-                alert('Another OCR process is currently running. Please wait.');
+                alert('현재 다른 OCR 프로세스가 실행 중입니다. 계속하려면 새로고침을 해주세요.');
                 return;
             }
             isProcessing = true;
@@ -267,32 +274,31 @@
                         let extractedText = '';
                         const progressBarContainer = document.getElementById('progress-bar-container');
                         const progressBar = document.getElementById('progress-bar');
-                        progressBarContainer.style.display = 'block'; // Show progress bar
-                        if (window.Android) {
-                            window.Android.showProgressBar();
-                        }
+                        progressBarContainer.classList.add('visible'); // 진행 표시 막대 표시
+                        document.querySelector('header').classList.add('invisible');
+                        document.querySelector('main').classList.add('invisible');
                         for (let i = 1; i <= pdf.numPages; i++) {
                             const page = await pdf.getPage(i);
 
-                            // Attempt to extract text content from the page
+                            // 페이지에서 텍스트 콘텐츠 추출 시도
                             const textContent = await page.getTextContent();
                             let pageText = textContent.items.map(item => item.str).join(' ');
 
                             if (!pageText.trim()) {
-                                // If no text content, render the page to an image and use OCR
+                                // 텍스트 콘텐츠가 없으면 페이지를 이미지로 렌더링하고 OCR 사용
                                 const viewport = page.getViewport({ scale: 1.5 });
                                 const canvas = document.createElement('canvas');
                                 const context = canvas.getContext('2d');
                                 canvas.height = viewport.height;
                                 canvas.width = viewport.width;
 
-                                // Render the page on the canvas
+                                // 페이지를 캔버스에 렌더링
                                 await page.render({ canvasContext: context, viewport: viewport }).promise;
 
-                                // Extract image data from the canvas
+                                // 캔버스에서 이미지 데이터 추출
                                 const imageData = canvas.toDataURL('image/png');
 
-                                // Perform OCR on the extracted image
+                                // 추출된 이미지에서 OCR 수행
                                 const { data: { text } } = await Tesseract.recognize(imageData, 'kor+eng', {
                                     logger: m => console.log(m)
                                 });
@@ -301,7 +307,7 @@
 
                             extractedText += pageText + '\n';
 
-                            // Update progress bar
+                            // 진행 표시 막대 업데이트
                             const progress = (i / pdf.numPages) * 100;
                             progressBar.style.width = `${progress}%`;
                         }
@@ -309,16 +315,16 @@
                         const translationText = document.getElementById('translation-text');
                         translationText.textContent = formattedText;
                         translationText.classList.remove('placeholder');
-                        // Show confirmation text in the left panel
+                        // 왼쪽 패널에 확인 텍스트 표시
                         const uploadedImageContainer = document.getElementById('uploaded-image-container');
-                        uploadedImageContainer.innerHTML = '<span class="placeholder">PDF Upload and Extraction Complete</span>';
-                        isProcessing = false; // Reset the flag
-                        progressBarContainer.style.display = 'none'; // Hide progress bar
+                        uploadedImageContainer.innerHTML = '<span class="placeholder">PDF 업로드 및 추출 완료</span>';
+                        isProcessing = false; // 플래그 재설정
+                        progressBarContainer.classList.remove('visible'); // 진행 표시 막대 숨기기
                     } catch (error) {
-                        console.error('Error during PDF processing:', error);
-                        alert('Failed to process PDF file.');
-                        isProcessing = false; // Reset the flag
-                        progressBarContainer.style.display = 'none'; // Hide progress bar
+                        console.error('PDF 처리 중 오류 발생:', error);
+                        alert('PDF 파일 처리에 실패했습니다.');
+                        isProcessing = false; // 플래그 재설정
+                        progressBarContainer.classList.remove('visible'); // 진행 표시 막대 숨기기
                     }
                 };
                 reader.readAsArrayBuffer(file);
@@ -329,12 +335,12 @@
             const text = document.getElementById('translation-text').textContent;
             if (text) {
                 navigator.clipboard.writeText(text).then(() => {
-                    alert('Text copied to clipboard.');
+                    alert('텍스트가 클립보드에 복사되었습니다.');
                 }).catch(err => {
-                    console.error('Error copying text: ', err);
+                    console.error('텍스트 복사 중 오류 발생: ', err);
                 });
             } else {
-                alert('No text available to copy.');
+                alert('복사할 텍스트가 없습니다.');
             }
         });
 
@@ -353,7 +359,7 @@
                 });
                 playAudioQueue();
             } else {
-                alert('No text available.');
+                alert('재생할 텍스트가 없습니다.');
             }
         });
 
@@ -366,7 +372,7 @@
         });
 
         function formatExtractedText(text) {
-            // Split text into lines and join with proper spacing
+            // 텍스트를 줄 단위로 분할하고 적절한 간격으로 결합
             return text.split(/[\r\n]+/).map(line => line.trim()).join('\n');
         }
 
@@ -409,20 +415,16 @@
             img.src = '';
             const placeholder = document.querySelector('.placeholder');
             placeholder.style.display = 'block';
+            document.querySelector('header').classList.remove('invisible');
+            document.querySelector('main').classList.remove('invisible');
         }
 
         function triggerJpgUpload() {
             document.getElementById('file-input').click();
-            if (window.Android) {
-                window.Android.setBackgroundColorWhite();
-            }
         }
 
         function triggerPdfUpload() {
             document.getElementById('pdf-input').click();
-            if (window.Android) {
-                window.Android.setBackgroundColorWhite();
-            }
         }
     </script>
 </body>
