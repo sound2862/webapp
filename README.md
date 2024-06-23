@@ -120,7 +120,7 @@
     <main>
         <div class="content">
             <div class="image-translation-section">
-                <div id="uploaded-image-container" onclick="triggerFileInput()">
+                <div id="uploaded-image-container">
                     <span class="placeholder">Upload an image to start</span>
                     <img id="uploaded-image" src="" alt="Uploaded Image">
                     <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleFileChange(event)">
@@ -137,12 +137,12 @@
         document.getElementById('uploaded-image').style.display = 'none';
 
         function handleImageUri(uri) {
-            console.log("handleImageUri called with URI:", uri); // 디버깅 로그 추가
             const img = document.getElementById('uploaded-image');
             img.src = uri;
             img.style.display = 'block';
             document.querySelector('#uploaded-image-container .placeholder').style.display = 'none';
             recognizeText(uri);
+            // Android 인터페이스를 통해 이미지 URI를 안드로이드로 전달
             Android.handleImage(uri);
         }
 
@@ -158,7 +158,6 @@
         }
 
         function recognizeText(imageSrc) {
-            console.log("recognizeText called with imageSrc:", imageSrc); // 디버깅 로그 추가
             Tesseract.recognize(
                 imageSrc,
                 'kor+eng',
@@ -166,21 +165,15 @@
                     logger: m => console.log(m)
                 }
             ).then(({ data: { text } }) => {
-                console.log("Tesseract recognized text:", text); // 디버깅 로그 추가
                 document.getElementById('translation-text').innerText = text;
-                Android.processText(text);
+                Android.processText(text); // 추출된 텍스트를 Android 인터페이스로 전달
             }).catch(err => {
-                console.error("Tesseract error:", err); // 디버깅 로그 추가
+                console.error(err);
             });
         }
 
         function triggerFileInput() {
             document.getElementById('file-input').click();
-        }
-
-        function triggerCameraInput() {
-            console.log("triggerCameraInput called"); // 디버깅 로그 추가
-            Android.openCamera();
         }
     </script>
 </body>
