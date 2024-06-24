@@ -63,22 +63,14 @@
         }
         .panel-container {
             display: flex;
+            justify-content: center; /* 중앙 정렬 */
+            align-items: center; /* 중앙 정렬 */
             width: 100%;
-            justify-content: space-between;
-            align-items: flex-start;
         }
+    
         .panel {
-            width: 45%;
-            border-radius: 12px;
-            padding: 26px;
-            background-color: white;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            border: 2px solid #cccccc;
-            position: relative;
-            min-height: 400px; /* Fixed height */
+            width: 100%; /* 패널을 꽉 채우기 */
+            max-width: 1200px; /* 최대 너비 설정 */
         }
         .panel:hover {
             border-color: #aaaaaa;
@@ -179,32 +171,32 @@
     <main>
         <div class="content">
             <div class="panel-container">
-                <div class="panel">
-                    <div id="uploaded-image-container">
-                        <span class="placeholder">Upload an image or PDF</span>
-                        <img id="uploaded-image" src="" alt="Uploaded Image">
-                    </div>
-                    <div class="button-container">
-                        <img src="https://raw.githubusercontent.com/siuwww/ChatICT/2251f390afe8f51369cb08904df7b0e5d4f6580d/image/upload-icon.png" id="upload-icon" class="icon-button" onclick="triggerJpgUpload();">
-                        <input type="file" id="file-input" accept="image/*" style="display:none;">
-                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/pdf-upload-icon.png?raw=true" id="pdf-upload-icon" class="icon-button" onclick="triggerPdfUpload();">
-                        <input type="file" id="pdf-input" accept="application/pdf" style="display:none;">
-                    </div>
-                    <div class="progress-bar-container" id="progress-bar-container">
-                        <div class="progress-bar" id="progress-bar"></div>
-                    </div>
+            <div class="panel">
+                <div id="uploaded-image-container">
+                    <span class="placeholder">Upload an image or PDF</span>
+                    <img id="uploaded-image" src="" alt="Uploaded Image">
                 </div>
-                <div class="panel" style="width: 0; visibility: hidden;">
-                    <div class="content-panel" id="translation-box">
-                        <span id="translation-text" class="placeholder"></span>
-                    </div>
-                    <div class="button-container">
-                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/copy-icon.png?raw=true" id="copy-text-btn" class="icon-button">
-                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/play-icon.png?raw=true" id="play-audio-btn" class="icon-button">
-                        <img src="https://github.com/siuwww/ChatICT/blob/main/image/stop-icon.png?raw=true" id="stop-audio-btn" class="icon-button">
-                    </div>
+                <div class="button-container">
+                    <img src="https://raw.githubusercontent.com/siuwww/ChatICT/2251f390afe8f51369cb08904df7b0e5d4f6580d/image/upload-icon.png" id="upload-icon" class="icon-button" onclick="triggerJpgUpload();">
+                    <input type="file" id="file-input" accept="image/*" style="display:none;">
+                    <img src="https://github.com/siuwww/ChatICT/blob/main/image/pdf-upload-icon.png?raw=true" id="pdf-upload-icon" class="icon-button" onclick="triggerPdfUpload();">
+                    <input type="file" id="pdf-input" accept="application/pdf" style="display:none;">
+                </div>
+                <div class="progress-bar-container" id="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar"></div>
                 </div>
             </div>
+            <div class="panel" style="width: 0; visibility: hidden;">
+                <div class="content-panel" id="translation-box">
+                    <span id="translation-text" class="placeholder"></span>
+                </div>
+                <div class="button-container">
+                    <img src="https://github.com/siuwww/ChatICT/blob/main/image/copy-icon.png?raw=true" id="copy-text-btn" class="icon-button">
+                    <img src="https://github.com/siuwww/ChatICT/blob/main/image/play-icon.png?raw=true" id="play-audio-btn" class="icon-button">
+                    <img src="https://github.com/siuwww/ChatICT/blob/main/image/stop-icon.png?raw=true" id="stop-audio-btn" class="icon-button">
+                </div>
+            </div>
+        </div>
         </div>
         <img src="https://github.com/siuwww/ChatICT/blob/main/image/anu.gif?raw=true" alt="ANU Logo" class="footer-logo">
     </main>
